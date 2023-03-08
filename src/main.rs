@@ -50,7 +50,7 @@ struct Args {
     padding_ratio: f32,
     #[arg(short = 'b', long, default_value_t = 1./6., help = "blur = padding * blur_ratio")]
     blur_ratio: f32,
-    #[arg(short = 'c', long, default_value_t = String::from("0x00000064"), help = "0xrrggbbaa")]
+    #[arg(short = 'c', long, default_value_t = String::from("0x00000064"), help = "0xRRGGBBAA")]
     shadow_color: String,
     #[arg(short = 'x', long, default_value_t = 0., help = "offset_x = padding * offsetx_ratio")]
     offsetx_ratio: f32,
