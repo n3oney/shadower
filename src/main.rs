@@ -41,7 +41,7 @@ impl Into<Color> for ShadowColor {
 
 #[derive(Parser, Debug)]
 #[command(name = "shadower")]
-#[command(about = "Adds shadow and padding to images", long_about = None)]
+#[command(about = "Adds shadow, padding and rounded corners to images", long_about = None)]
 struct Args {
     #[arg(short = 'r', long, default_value_t = 12.0, help = "border radius")]
     radius: f32,
