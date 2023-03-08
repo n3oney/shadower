@@ -46,15 +46,15 @@ impl Into<Color> for ShadowColor {
 struct Args {
     #[arg(short = 'r', long, default_value_t = 12.0, help = "border radius")]
     radius: f32,
-    #[arg(short = 'p', long, default_value_t = 1./6., help = "padding = max((img.width * padding_ratio), (img.height * padding.ratio))")]
+    #[arg(short = 'p', long, default_value_t = 0.167, help = "padding = max((img.width * padding_ratio), (img.height * padding.ratio))")]
     padding_ratio: f32,
-    #[arg(short = 'b', long, default_value_t = 1./6., help = "blur = padding * blur_ratio")]
+    #[arg(short = 'b', long, default_value_t = 0.167, help = "blur = padding * blur_ratio")]
     blur_ratio: f32,
     #[arg(short = 'c', long, default_value_t = String::from("0x00000064"), help = "0xRRGGBBAA")]
     shadow_color: String,
     #[arg(short = 'x', long, default_value_t = 0., help = "offset_x = padding * offsetx_ratio")]
     offsetx_ratio: f32,
-    #[arg(short = 'y', long, default_value_t = 1./8., help = "offset_y = padding * offsety_ratio")]
+    #[arg(short = 'y', long, default_value_t = 0.125, help = "offset_y = padding * offsety_ratio")]
     offsety_ratio: f32,
     #[arg(short = 'i', long, default_value_t = String::from("-"), help = "path to input file / - for stdin")]
     input: String,
