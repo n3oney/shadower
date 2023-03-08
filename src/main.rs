@@ -7,13 +7,60 @@ use skia_safe::{Color, Data, IRect, Image, Point, RRect, Rect};
 
 use std::io::{self, Read, Write};
 
+use clap::Parser;
+
 fn new_canvas(width: i32, height: i32) -> Surface {
     let mut surface = Surface::new_raster_n32_premul((width, height)).expect("no surface!");
     surface.canvas().clear(Color::TRANSPARENT);
     surface
 }
 
+struct ShadowColor {
+    r: u8,
+    g: u8,
+    b: u8,
+    a: u8,
+}
+
+impl From<String> for ShadowColor {
+    fn from(value: String) -> Self {
+        let r: u8 = u8::from_str_radix(&value[2..4],  16).unwrap_or(0);
+        let g: u8 = u8::from_str_radix(&value[4..6],  16).unwrap_or(0);
+        let b: u8 = u8::from_str_radix(&value[6..8],  16).unwrap_or(0);
+        let a: u8 = u8::from_str_radix(&value[8..10], 16).unwrap_or(0);
+
+        Self { r, g, b, a }
+    }
+}
+
+impl Into<Color> for ShadowColor {
+    fn into(self) -> Color {
+        Color::from_argb(self.a, self.r, self.g, self.b)
+    }
+}
+
+#[derive(Parser, Debug)]
+#[command(name = "shadower")]
+#[command(about = "Adds shadow and padding to images", long_about = None)]
+struct Args {
+    #[arg(short = 'r', long, default_value_t = 12.0)]
+    radius: f32,
+    #[arg(short = 'p', long, default_value_t = 1./6., help = "padding = max((img.width * padding_ratio), (img.height * padding.ratio))")]
+    padding_ratio: f32,
+    #[arg(short = 'c', long, default_value_t = String::from("0x00000064"))]
+    shadow_color: String,
+    #[arg(short = 'x', long, default_value_t = 0., help = "offset_x = padding * offsetx_ratio")]
+    offsetx_ratio: f32,
+    #[arg(short = 'y', long, default_value_t = 1./8., help = "offset_y = padding * offsety_ratio")]
+    offsety_ratio: f32,
+}
+
 fn main() -> Result<()> {
+
+    let args = Args::parse();
+
+    let shadow_color: Color = ShadowColor::from(args.shadow_color).into();
+
     let mut user_input: Vec<u8> = Vec::new();
     let mut stdin = io::stdin();
     stdin
@@ -24,13 +71,11 @@ fn main() -> Result<()> {
         Image::from_encoded(Data::new_bytes(&user_input)).context("Failed to decode image")?
     };
 
-    let x_padding = img.width() / 6;
-    let y_padding = img.height() / 6;
+    let x_padding = (img.width() as f32 * args.padding_ratio) as i32;
+    let y_padding = (img.height() as f32 * args.padding_ratio) as i32;
 
     let padding = x_padding.max(y_padding);
     let blur = x_padding.max(y_padding);
-
-    let radius = 12.0;
 
     let mut canvas = new_canvas(img.width() + padding, img.height() + padding);
 
@@ -43,10 +88,10 @@ fn main() -> Result<()> {
                 right: (img.width() + padding / 2) as f32,
             },
             &[
-                Point::new(radius, radius),
-                Point::new(radius, radius),
-                Point::new(radius, radius),
-                Point::new(radius, radius),
+                Point::new(args.radius, args.radius),
+                Point::new(args.radius, args.radius),
+                Point::new(args.radius, args.radius),
+                Point::new(args.radius, args.radius),
             ],
         ),
         None,
@@ -60,9 +105,9 @@ fn main() -> Result<()> {
     let padded_image = canvas.image_snapshot();
 
     let filter = drop_shadow_only(
-        (0, padding / 8),
+        (padding as f32 * args.offsetx_ratio, padding as f32 * args.offsety_ratio),
         (blur as f32 / 6.0, blur as f32 / 6.0),
-        Color::BLACK.with_a(100),
+        shadow_color,
         None,
         None,
     )
