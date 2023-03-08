@@ -6,6 +6,7 @@ use skia_safe::Surface;
 use skia_safe::{Color, Data, IRect, Image, Point, RRect, Rect};
 
 use std::io::{self, Read, Write};
+use std::fs::{self, File};
 
 use clap::Parser;
 
@@ -53,6 +54,10 @@ struct Args {
     offsetx_ratio: f32,
     #[arg(short = 'y', long, default_value_t = 1./8., help = "offset_y = padding * offsety_ratio")]
     offsety_ratio: f32,
+    #[arg(short = 'i', long, default_value_t = String::from("-"), help = "path to input file / - for stdin")]
+    input: String,
+    #[arg(short = 'o', long, default_value_t = String::from("-"), help = "path to output file / - for stdout")]
+    output: String,
 }
 
 fn main() -> Result<()> {
@@ -62,10 +67,17 @@ fn main() -> Result<()> {
     let shadow_color: Color = ShadowColor::from(args.shadow_color).into();
 
     let mut user_input: Vec<u8> = Vec::new();
-    let mut stdin = io::stdin();
-    stdin
-        .read_to_end(&mut user_input)
-        .context("Failed to read image from stdin")?;
+    match args.input.as_str() {
+        "-" => {
+            io::stdin()
+                .read_to_end(&mut user_input)
+                .context("Failed to read image from stdin")?;
+        },
+        path => {
+            user_input = fs::read(path)
+                .context(format!("Failed to read file {}", path))?;
+        }
+    };
 
     let img: Image = unsafe {
         Image::from_encoded(Data::new_bytes(&user_input)).context("Failed to decode image")?
@@ -144,9 +156,19 @@ fn main() -> Result<()> {
         .context("Failed to encode image")?;
 
     let bytes = data.as_bytes();
-    let mut stdout = io::stdout();
-
-    stdout.write_all(bytes).context("Failed to output image")?;
+    match args.output.as_str() {
+        "-" => {
+            io::stdout()
+                .write_all(bytes)
+                .context("Failed to write to stdout")?;
+        },
+        path => {
+            let mut output = File::create(path)?;
+            output
+                .write_all(bytes)
+                .context(format!("Failed to write to {}", path))?;
+        }
+    }
 
     Ok(())
 }
