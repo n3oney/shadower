@@ -43,11 +43,11 @@ impl Into<Color> for ShadowColor {
 #[command(name = "shadower")]
 #[command(about = "Adds shadow and padding to images", long_about = None)]
 struct Args {
-    #[arg(short = 'r', long, default_value_t = 12.0)]
+    #[arg(short = 'r', long, default_value_t = 12.0, help = "border radius")]
     radius: f32,
     #[arg(short = 'p', long, default_value_t = 1./6., help = "padding = max((img.width * padding_ratio), (img.height * padding.ratio))")]
     padding_ratio: f32,
-    #[arg(short = 'c', long, default_value_t = String::from("0x00000064"))]
+    #[arg(short = 'c', long, default_value_t = String::from("0x00000064"), help = "0xrrggbbaa")]
     shadow_color: String,
     #[arg(short = 'x', long, default_value_t = 0., help = "offset_x = padding * offsetx_ratio")]
     offsetx_ratio: f32,
