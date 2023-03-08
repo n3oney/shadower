@@ -73,7 +73,7 @@ fn main() -> Result<()> {
         "-" => {
             io::stdin()
                 .read_to_end(&mut user_input)
-                .context("Failed to read image from stdin")?;
+                .context("Failed to read from stdin")?;
         },
         path => {
             user_input = fs::read(path)
