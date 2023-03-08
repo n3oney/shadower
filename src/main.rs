@@ -48,6 +48,8 @@ struct Args {
     radius: f32,
     #[arg(short = 'p', long, default_value_t = 1./6., help = "padding = max((img.width * padding_ratio), (img.height * padding.ratio))")]
     padding_ratio: f32,
+    #[arg(short = 'b', long, default_value_t = 1./6., help = "blur = padding * blur_ratio")]
+    blur_ratio: f32,
     #[arg(short = 'c', long, default_value_t = String::from("0x00000064"), help = "0xrrggbbaa")]
     shadow_color: String,
     #[arg(short = 'x', long, default_value_t = 0., help = "offset_x = padding * offsetx_ratio")]
@@ -87,7 +89,6 @@ fn main() -> Result<()> {
     let y_padding = (img.height() as f32 * args.padding_ratio) as i32;
 
     let padding = x_padding.max(y_padding);
-    let blur = x_padding.max(y_padding);
 
     let mut canvas = new_canvas(img.width() + padding, img.height() + padding);
 
@@ -118,7 +119,7 @@ fn main() -> Result<()> {
 
     let filter = drop_shadow_only(
         (padding as f32 * args.offsetx_ratio, padding as f32 * args.offsety_ratio),
-        (blur as f32 / 6.0, blur as f32 / 6.0),
+        (padding as f32 * args.blur_ratio, padding as f32 * args.blur_ratio),
         shadow_color,
         None,
         None,
