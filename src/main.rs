@@ -46,7 +46,7 @@ impl Into<Color> for ShadowColor {
 #[derive(Parser, Debug)]
 #[command(name = "shadower")]
 #[command(
-    about = "Adds shadow, padding and rounded corners to images.",
+    about = "Adds shadow, padding, and rounded corners to images.",
     long_about = None,
     after_help = "
     \x1b[1;4mMath Expressions\x1b[0m\nFor every numerical option here, you can use math expressions to calculate the values depending on the input image size.
