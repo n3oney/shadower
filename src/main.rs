@@ -58,33 +58,33 @@ struct Args {
     #[arg(
         short = 'r',
         long,
-        default_value_t = String::from("12"),
+        default_value_t = String::from("8 + max / 100"),
         help = "border radius"
     )]
     radius: String,
 
     #[arg(
         long,
-        default_value_t = String::from("max * 0.167"),
+        default_value_t = String::from("max / 6 + 10"),
         help = "horizontal padding"
     )]
     padding_x: String,
     #[arg(
         long,
-        default_value_t = String::from("max * 0.167"),
+        default_value_t = String::from("max / 6 + 10"),
         help = "vertical padding"
     )]
     padding_y: String,
 
     #[arg(
         long,
-        default_value_t = String::from("max * 0.167 * 0.167"),
+        default_value_t = String::from("max / 36 + 5"),
         help = "horizontal shadow blur"
     )]
     blur_x: String,
     #[arg(
         long,
-        default_value_t = String::from("max * 0.167 * 0.167"),
+        default_value_t = String::from("max / 36 + 5"),
         help = "vertical shadow blur"
     )]
     blur_y: String,
@@ -100,7 +100,7 @@ struct Args {
     offset_x: String,
     #[arg(
         long,
-        default_value_t = String::from("height * 0.167 * 0.125"),
+        default_value_t = String::from("height / 48"),
         help = "vertical shadow offset"
     )]
     offset_y: String,
