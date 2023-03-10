@@ -69,13 +69,13 @@ struct Args {
 
     #[arg(
         long,
-        default_value_t = String::from("max / 6 + 10"),
+        default_value_t = String::from("max / 12 + 10"),
         help = "horizontal padding"
     )]
     padding_x: String,
     #[arg(
         long,
-        default_value_t = String::from("max / 6 + 10"),
+        default_value_t = String::from("max / 12 + 10"),
         help = "vertical padding"
     )]
     padding_y: String,
@@ -196,7 +196,7 @@ fn main() -> Result<()> {
     let x_padding = parse_math(args.padding_x, orig_width, orig_height) as i32;
     let y_padding = parse_math(args.padding_y, orig_width, orig_height) as i32;
 
-    let mut canvas = new_canvas(orig_width + x_padding, orig_height + y_padding);
+    let mut canvas = new_canvas(orig_width + x_padding * 2, orig_height + y_padding * 2);
 
     let radius = parse_math(args.radius, orig_width, orig_height);
     let point = Point::new(radius, radius);
@@ -204,10 +204,10 @@ fn main() -> Result<()> {
     canvas.canvas().clip_rrect(
         RRect::new_rect_radii(
             Rect {
-                left: (x_padding / 2) as f32,
-                top: (y_padding / 2) as f32,
-                bottom: (img.height() + y_padding / 2) as f32,
-                right: (img.width() + x_padding / 2) as f32,
+                left: x_padding as f32,
+                top: y_padding as f32,
+                bottom: (img.height() + y_padding) as f32,
+                right: (img.width() + x_padding) as f32,
             },
             &[point.clone(), point.clone(), point.clone(), point],
         ),
@@ -217,7 +217,7 @@ fn main() -> Result<()> {
 
     canvas
         .canvas()
-        .draw_image(img, (x_padding / 2, y_padding / 2), None);
+        .draw_image(img, (x_padding, y_padding), None);
 
     let padded_image = canvas.image_snapshot();
 
