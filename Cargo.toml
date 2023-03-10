@@ -2,8 +2,10 @@
 name = "shadower"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license-file = "LICENSE"
+description = "A simple CLI utility to add rounded borders, padding, and shadows to images."
+repository = "https://github.com/n3oney/shadower"
+readme = "README.md"
 
 [dependencies]
 anyhow = "1.0.69"
