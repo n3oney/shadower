@@ -1,6 +1,6 @@
 [package]
 name = "shadower"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 description = "A simple CLI utility to add rounded borders, padding, and shadows to images."
