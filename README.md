@@ -20,6 +20,23 @@ To do so, you can use **math expressions**, which let you dynamically calculate 
 For example, setting the `--offset-y` to `max / 6 / 4`, while running on a 800x600px image, will result in the shadow being offset down by 33.(3)px.
 To view all the flags, use `--help`.
 
+## Config file
+
+You can also configure shadower using a config file instead of the flags. The default config location is `$XDG_CONFIG_HOME/shadower/config.toml`, but you can override it using the `--config` flag.
+The config file can change every option (except the `--config`), and you just have to put the values in.
+The keys have to use snake_case instead of kebab-case.
+
+Example config:
+
+```toml
+radius="20"
+padding-x = "15 + max/2"
+```
+
+You can use environment variables, they will be expanded.
+
+_Note: flags have priority over the config file_
+
 ## Contributing
 
 1. Make a fork
