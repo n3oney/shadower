@@ -30,7 +30,7 @@ Example config:
 
 ```toml
 radius="20"
-padding-x = "15 + max/2"
+padding_x="15 + max/2"
 ```
 
 You can use environment variables, they will be expanded.
