@@ -154,23 +154,22 @@ fn main() -> Result<()> {
     };
 
     if let Some(config_path) = config_path {
-        if let Ok(config) = ConfigFile::read(config_path) {
-            replace_default!(args, config, matches, radius);
+        let config = ConfigFile::read(config_path).context("Invalid config file")?;
+        replace_default!(args, config, matches, radius);
 
-            replace_default!(args, config, matches, padding_x);
-            replace_default!(args, config, matches, padding_y);
+        replace_default!(args, config, matches, padding_x);
+        replace_default!(args, config, matches, padding_y);
 
-            replace_default!(args, config, matches, blur_x);
-            replace_default!(args, config, matches, blur_y);
+        replace_default!(args, config, matches, blur_x);
+        replace_default!(args, config, matches, blur_y);
 
-            replace_default!(args, config, matches, shadow_color);
+        replace_default!(args, config, matches, shadow_color);
 
-            replace_default!(args, config, matches, offset_x);
-            replace_default!(args, config, matches, offset_y);
+        replace_default!(args, config, matches, offset_x);
+        replace_default!(args, config, matches, offset_y);
 
-            replace_default!(args, config, matches, input);
-            replace_default!(args, config, matches, output);
-        }
+        replace_default!(args, config, matches, input);
+        replace_default!(args, config, matches, output);
     }
 
     let shadow_color: Color = ShadowColor::from(args.shadow_color).into();
