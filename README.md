@@ -2,10 +2,19 @@
 
 _a simple command-line utility to add rounded corners and shadows to images_
 
-## Building:
+## Installation
 
-1. make sure you have rust installed
-2. `cargo build --release`
+### From AUR
+
+`paru -S shadower-git`
+
+### From source
+
+`cargo build --release`
+
+### From crates.io
+
+`cargo install shadower`
 
 ## Usage
 
