@@ -624,7 +624,7 @@ dependencies = [
 
 [[package]]
 name = "shadower"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "clap",
@@ -632,6 +632,7 @@ dependencies = [
  "envmnt",
  "serde",
  "skia-safe",
+ "thiserror",
  "toml 0.7.2",
 ]
 

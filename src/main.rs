@@ -1,6 +1,7 @@
 mod config;
 mod math;
 
+use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
 use clap::CommandFactory;
@@ -135,6 +136,8 @@ fn main() -> Result<()> {
 
     let matches = Args::command().get_matches();
 
+    let mut is_default_config = true;
+
     let config_path = match matches.value_source("config") {
         None => dirs::config_dir().map(|mut dir| {
             dir.push("shadower/config.toml");
@@ -146,6 +149,7 @@ fn main() -> Result<()> {
                 dir
             }),
             _ => {
+                is_default_config = false;
                 let path = PathBuf::from(args.config.clone());
 
                 std::fs::canonicalize(path).ok()
@@ -154,22 +158,35 @@ fn main() -> Result<()> {
     };
 
     if let Some(config_path) = config_path {
-        let config = ConfigFile::read(config_path).context("Invalid config file")?;
-        replace_default!(args, config, matches, radius);
+        let config = ConfigFile::read(config_path);
 
-        replace_default!(args, config, matches, padding_x);
-        replace_default!(args, config, matches, padding_y);
+        match config {
+            Ok(config) => {
+                replace_default!(args, config, matches, radius);
 
-        replace_default!(args, config, matches, blur_x);
-        replace_default!(args, config, matches, blur_y);
+                replace_default!(args, config, matches, padding_x);
+                replace_default!(args, config, matches, padding_y);
 
-        replace_default!(args, config, matches, shadow_color);
+                replace_default!(args, config, matches, blur_x);
+                replace_default!(args, config, matches, blur_y);
 
-        replace_default!(args, config, matches, offset_x);
-        replace_default!(args, config, matches, offset_y);
+                replace_default!(args, config, matches, shadow_color);
 
-        replace_default!(args, config, matches, input);
-        replace_default!(args, config, matches, output);
+                replace_default!(args, config, matches, offset_x);
+                replace_default!(args, config, matches, offset_y);
+
+                replace_default!(args, config, matches, input);
+                replace_default!(args, config, matches, output);
+            }
+            Err(error) => match error {
+                config::ConfigError::DeserializeFailed(err) => bail!(err),
+                config::ConfigError::MissingFile(err) => {
+                    if !is_default_config {
+                        bail!(err);
+                    }
+                }
+            },
+        }
     }
 
     let shadow_color: Color = ShadowColor::from(args.shadow_color).into();
