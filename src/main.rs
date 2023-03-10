@@ -1,7 +1,10 @@
+mod config;
 mod math;
 
 use anyhow::Context;
 use anyhow::Result;
+use clap::CommandFactory;
+use config::ConfigFile;
 use math::parse_math;
 use skia_safe::image_filters::drop_shadow_only;
 use skia_safe::EncodedImageFormat;
@@ -10,6 +13,7 @@ use skia_safe::{Color, Data, IRect, Image, Point, RRect, Rect};
 
 use std::fs::{self, File};
 use std::io::{self, Read, Write};
+use std::path::PathBuf;
 
 use clap::Parser;
 
@@ -109,10 +113,65 @@ struct Args {
     input: String,
     #[arg(short = 'o', long, default_value_t = String::from("-"), help = "path to output file / - for stdout")]
     output: String,
+
+    #[arg(long, default_value_t = String::from("$XDG_CONFIG_HOME/shadower/config.toml"), help = "path to config file")]
+    config: String,
+}
+
+macro_rules! replace_default {
+    ($args: ident, $config: ident, $matches: ident, $prop: ident) => {
+        if let Some(clap::parser::ValueSource::DefaultValue) =
+            $matches.value_source(stringify!($prop))
+        {
+            if let Some(v) = $config.$prop {
+                $args.$prop = envmnt::expand(&v, None);
+            }
+        }
+    };
 }
 
 fn main() -> Result<()> {
-    let args = Args::parse();
+    let mut args = Args::parse();
+
+    let matches = Args::command().get_matches();
+
+    let config_path = match matches.value_source("config") {
+        None => dirs::config_dir().map(|mut dir| {
+            dir.push("shadower/config.toml");
+            dir
+        }),
+        Some(source) => match source {
+            clap::parser::ValueSource::DefaultValue => dirs::config_dir().map(|mut dir| {
+                dir.push("shadower/config.toml");
+                dir
+            }),
+            _ => {
+                let path = PathBuf::from(args.config.clone());
+
+                std::fs::canonicalize(path).ok()
+            }
+        },
+    };
+
+    if let Some(config_path) = config_path {
+        if let Ok(config) = ConfigFile::read(config_path) {
+            replace_default!(args, config, matches, radius);
+
+            replace_default!(args, config, matches, padding_x);
+            replace_default!(args, config, matches, padding_y);
+
+            replace_default!(args, config, matches, blur_x);
+            replace_default!(args, config, matches, blur_y);
+
+            replace_default!(args, config, matches, shadow_color);
+
+            replace_default!(args, config, matches, offset_x);
+            replace_default!(args, config, matches, offset_y);
+
+            replace_default!(args, config, matches, input);
+            replace_default!(args, config, matches, output);
+        }
+    }
 
     let shadow_color: Color = ShadowColor::from(args.shadow_color).into();
 
