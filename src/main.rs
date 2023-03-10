@@ -70,13 +70,13 @@ struct Args {
 
     #[arg(
         long,
-        default_value_t = String::from("max / 12 + 10"),
+        default_value_t = String::from("max / 18 + 5"),
         help = "horizontal padding"
     )]
     padding_x: String,
     #[arg(
         long,
-        default_value_t = String::from("max / 12 + 10"),
+        default_value_t = String::from("max / 18 + 5 + height / 48"),
         help = "vertical padding"
     )]
     padding_y: String,
