@@ -1,6 +1,16 @@
+<div align="center" width="100%">
+
 # shadower
 
 _a simple command-line utility to add rounded corners and shadows to images_
+
+![GitHub](https://img.shields.io/github/license/n3oney/shadower)
+![GitHub top language](https://img.shields.io/github/languages/top/n3oney/shadower?color=%23DEA584&logo=rust)
+[![Crates.io](https://img.shields.io/crates/d/shadower?label=cargo%20downloads)](https://crates.io/crates/shadower)
+[![AUR votes](https://img.shields.io/aur/votes/shadower-git?label=AUR%20votes)](https://aur.archlinux.org/packages/shadower-git)
+[![wakatime](https://wakatime.com/badge/github/n3oney/shadower.svg)](https://wakatime.com/badge/github/n3oney/shadower)
+
+</div>
 
 ## Installation
 
@@ -35,7 +45,7 @@ You can also configure shadower using a config file instead of the flags. The de
 The config file can change every option (except the `--config`), and you just have to put the values in.
 The keys have to use snake_case instead of kebab-case.
 
-Example config:
+**Example config:**
 
 ```toml
 radius="20"
@@ -44,7 +54,9 @@ padding_x="15 + max/2"
 
 You can use environment variables, they will be expanded.
 
-_Note: flags have priority over the config file_
+The default config values are always displayed in the `--help`.
+
+###### Note: flags have priority over the config file
 
 ## Contributing
 
