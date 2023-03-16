@@ -124,3 +124,106 @@ where
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::parse_math;
+
+    const WIDTH: i32 = 100;
+    const HEIGHT: i32 = 200;
+
+    const WIDTHF: f32 = 100.0;
+    const HEIGHTF: f32 = 200.0;
+
+    // Helper functions for better tests readability
+    fn max() -> f32 {
+        WIDTHF.max(HEIGHTF)
+    }
+
+    fn min() -> f32 {
+        WIDTHF.min(HEIGHTF)
+    }
+
+    #[test]
+    fn addition() {
+        assert_eq!(parse_math("9 + 10".to_owned(), WIDTH, HEIGHT), 19.0)
+    }
+
+    #[test]
+    fn subtraction() {
+        assert_eq!(parse_math("10 - 9".to_owned(), WIDTH, HEIGHT), 1.0)
+    }
+
+    #[test]
+    fn multiplication() {
+        assert_eq!(parse_math("9 * 10".to_owned(), WIDTH, HEIGHT), 90.0)
+    }
+
+    #[test]
+    fn division() {
+        assert_eq!(parse_math("21 / 3".to_owned(), WIDTH, HEIGHT), 7.0)
+    }
+
+    #[test]
+    fn sizes() {
+        assert_eq!(
+            parse_math("width + 10".to_owned(), WIDTH, HEIGHT),
+            WIDTHF + 10.0
+        );
+        assert_eq!(
+            parse_math("height + 10".to_owned(), WIDTH, HEIGHT),
+            HEIGHTF + 10.0
+        );
+    }
+
+    #[test]
+    fn minmax() {
+        assert_eq!(
+            parse_math("min + 10".to_owned(), WIDTH, HEIGHT),
+            min() + 10.0
+        );
+        assert_eq!(
+            parse_math("max + 10".to_owned(), WIDTH, HEIGHT),
+            max() + 10.0
+        );
+    }
+
+    #[test]
+    fn brackets() {
+        assert_eq!(parse_math("2 * (20 + 10)".to_owned(), WIDTH, HEIGHT), 60.0);
+    }
+
+    #[test]
+    fn operation_order() {
+        assert_eq!(parse_math("2 + 2 * 2".to_owned(), WIDTH, HEIGHT), 6.0);
+    }
+
+    #[test]
+    fn clamp() {
+        assert_eq!(
+            parse_math("clamp(1, 2 + 2 * 2, 4)".to_owned(), WIDTH, HEIGHT),
+            4.0
+        )
+    }
+
+    #[test]
+    fn everything() {
+        fn clamp(min: f32, val: f32, max: f32) -> f32 {
+            val.max(min).min(max)
+        }
+
+        assert_eq!(
+            parse_math(
+                "(5 + 1) * 2 + 2 * 2 / clamp(width, 300 / min, height) - max".to_owned(),
+                WIDTH,
+                HEIGHT
+            ),
+            (5.0 + 1.0) * 2.0 + 2.0 * 2.0 / clamp(WIDTHF, 300.0 / min(), HEIGHTF) - max()
+        )
+    }
+
+    #[test]
+    fn twenty_one() {
+        assert_ne!(parse_math("9 + 10".to_owned(), WIDTH, HEIGHT), 21.0)
+    }
+}
