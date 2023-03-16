@@ -63,38 +63,38 @@ struct Args {
     #[arg(
         short = 'r',
         long,
-        default_value_t = String::from("8 + max / 100"),
+        default_value_t = String::from("clamp(8, max / 100, 340282346638528859811704183484516925440)"), // I really need to make _ mean f32::min/max...
         help = "border radius"
     )]
     radius: String,
 
     #[arg(
         long,
-        default_value_t = String::from("max / 18 + 5"),
+        default_value_t = String::from("clamp(15, height/30, 100)"),
         help = "horizontal padding"
     )]
     padding_x: String,
     #[arg(
         long,
-        default_value_t = String::from("max / 18 + 5 + height / 48"),
+        default_value_t = String::from("clamp(15, height/30, 100)"),
         help = "vertical padding"
     )]
     padding_y: String,
 
     #[arg(
         long,
-        default_value_t = String::from("max / 36 + 5"),
+        default_value_t = String::from("clamp(15, height/30, 100) / 3"),
         help = "horizontal shadow blur"
     )]
     blur_x: String,
     #[arg(
         long,
-        default_value_t = String::from("max / 36 + 5"),
+        default_value_t = String::from("clamp(15, height/30, 100) / 3"),
         help = "vertical shadow blur"
     )]
     blur_y: String,
 
-    #[arg(short = 'c', long, default_value_t = String::from("0x00000064"), help = "0xRRGGBBAA")]
+    #[arg(short = 'c', long, default_value_t = String::from("0x00000032"), help = "0xRRGGBBAA")]
     shadow_color: String,
 
     #[arg(
@@ -105,7 +105,7 @@ struct Args {
     offset_x: String,
     #[arg(
         long,
-        default_value_t = String::from("height / 48"),
+        default_value_t = String::from("clamp(0, height/48, 10)"),
         help = "vertical shadow offset"
     )]
     offset_y: String,
