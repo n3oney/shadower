@@ -13,7 +13,7 @@ pub fn parse_math(math: String, width: i32, height: i32) -> f32 {
         .replace("min", &min.to_string());
     match eval(&math_with_keywords) {
         Ok(result) => result,
-        Err(_) => panic!("Invalid math expression: {math}"),
+        Err(err) => panic!("Invalid math expression: {math}\n{err:#?}"),
     }
 }
 
