@@ -77,8 +77,30 @@ where
     if tokens.peek().is_none() {
         return Err("Unexpected end of input".to_owned());
     }
-    match tokens.next().unwrap() {
+    match tokens.peek().unwrap() {
+        'c' => {
+            if tokens.take(5).collect::<String>() != "clamp" {
+                return Err("Expected 'clamp'".to_owned());
+            }
+            if tokens.next() != Some('(') {
+                return Err("Expected '('".to_owned());
+            }
+            let min = read_expression(tokens.by_ref())?;
+            if tokens.next() != Some(',') {
+                return Err("Expected ','".to_owned());
+            }
+            let value = read_expression(tokens.by_ref())?;
+            if tokens.next() != Some(',') {
+                return Err("Expected ','".to_owned());
+            }
+            let max = read_expression(tokens.by_ref())?;
+            if tokens.next() != Some(')') {
+                return Err("Expected ')'".to_owned());
+            }
+            Ok(value.max(min).min(max))
+        }
         '(' => {
+            tokens.next(); // consume the opening parenthesis
             let result = read_expression(tokens)?;
             if tokens.next() != Some(')') {
                 return Err("Expected ')'".to_owned());
@@ -87,7 +109,8 @@ where
         }
         c => {
             let mut num = String::new();
-            num.push(c);
+            num.push(*c);
+            tokens.next(); // consume the character we just peeked
             while let Some(&c) = tokens.peek() {
                 match c {
                     '0'..='9' | '.' => {
