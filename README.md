@@ -36,7 +36,9 @@ shadower by default reads the image from stdin and outputs it to stdout, so here
 
 However, you can also customize every aspect of the rounding, shadows, and padding of the images.
 To do so, you can use **math expressions**, which let you dynamically calculate the values depending on the size of the input image.
-For example, setting the `--offset-y` to `max / 6 / 4`, while running on a 800x600px image, will result in the shadow being offset down by 33.(3)px.
+For example, setting the `--offset-y` to `max / 6 / 4`, while running on a 800x600px image, will result in the shadow being offset down by 33.(3)px.  
+You can also use the `clamp(min, val, max)` function to clamp a function to a given min and max, or if you only need a `min` or `max`, put `_` in the unnecessary value. (`clamp(_, 20, 10)` is `min(20, 10)`)
+
 To view all the flags, use `--help`.
 
 ## Config file

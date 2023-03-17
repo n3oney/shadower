@@ -57,13 +57,15 @@ impl Into<Color> for ShadowColor {
     \x1b[1;4mMath Expressions\x1b[0m\nFor every numerical option here, you can use math expressions to calculate the values depending on the input image size.
     You can use the \x1b[1mwidth\x1b[0m, \x1b[1mheight\x1b[0m, \x1b[1mmax\x1b[0m, and \x1b[1mmin\x1b[0m keywords within the expressions.
     The expressions support addition, subtraction, multiplication and division.
+    There is also a clamp(min, val, max) function, which functions just like the similar clamp function in CSS.
+    If you don't want a limit, pass _ as the value, for example: clamp(10, width, _) is like max(10, width).
     "
 )]
 struct Args {
     #[arg(
         short = 'r',
         long,
-        default_value_t = String::from("clamp(8, max / 100, 340282346638528859811704183484516925440)"), // I really need to make _ mean f32::min/max...
+        default_value_t = String::from("clamp(8, max / 100, _)"),
         help = "border radius"
     )]
     radius: String,

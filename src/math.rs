@@ -85,7 +85,23 @@ where
             if tokens.next() != Some('(') {
                 return Err("Expected '('".to_owned());
             }
-            let min = read_expression(tokens.by_ref())?;
+
+            while let Some(token) = tokens.peek() {
+                if token == &' ' {
+                    tokens.next();
+                    continue;
+                }
+
+                break;
+            }
+
+            let min = if tokens.peek().ok_or("Unfinished clamp function")? == &'_' {
+                tokens.next();
+                f32::MIN
+            } else {
+                read_expression(tokens.by_ref())?
+            };
+
             if tokens.next() != Some(',') {
                 return Err("Expected ','".to_owned());
             }
@@ -93,7 +109,23 @@ where
             if tokens.next() != Some(',') {
                 return Err("Expected ','".to_owned());
             }
-            let max = read_expression(tokens.by_ref())?;
+
+            while let Some(token) = tokens.peek() {
+                if token == &' ' {
+                    tokens.next();
+                    continue;
+                }
+
+                break;
+            }
+
+            let max = if tokens.peek().ok_or("Unfinished clamp function")? == &'_' {
+                tokens.next();
+                f32::MAX
+            } else {
+                read_expression(tokens.by_ref())?
+            };
+
             if tokens.next() != Some(')') {
                 return Err("Expected ')'".to_owned());
             }
@@ -203,7 +235,15 @@ mod tests {
         assert_eq!(
             parse_math("clamp(1, 2 + 2 * 2, 4)".to_owned(), WIDTH, HEIGHT),
             4.0
-        )
+        );
+        assert_eq!(
+            parse_math("clamp(1, 2 + 2 * 2, _)".to_owned(), WIDTH, HEIGHT),
+            6.0
+        );
+        assert_eq!(
+            parse_math("clamp(_, -8, -10)".to_owned(), WIDTH, HEIGHT),
+            -10.0
+        );
     }
 
     #[test]
