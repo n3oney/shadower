@@ -9,7 +9,7 @@ readme = "README.md"
 
 [dependencies]
 anyhow = "1.0.69"
-skia-safe = "0.58.0"
+skia-safe = "=0.52.0"
 clap = { version = "4.1.8", features = [ "derive" ] }
 toml = "0.7.2"
 serde = { version = "1.0.154", features = ["derive"]}
