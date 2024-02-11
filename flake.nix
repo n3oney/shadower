@@ -63,13 +63,26 @@
         overlays = [self.overlay];
       };
     in
-      pkgs.mkShell {
+      pkgs.mkShell.override { stdenv = pkgs.clang15Stdenv; } {
         inputsFrom = [
           pkgs."${cargoToml.package.name}"
         ];
+        NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
+          pkgs.clangStdenv.cc.cc
+          pkgs.openssl
+          #pkgs.skia
+        ];
+
+        NIX_LD = "/run/current-system/sw/share/nix-ld/lib/ld.so";
+        SKIA_NINJA_COMMAND = "${pkgs.ninja}/bin/ninja";
+        SKIA_GN_COMMAND = "${pkgs.gn}/bin/gn";
+        
         buildInputs = with pkgs; [
           rustfmt
+          rust-analyzer
           nixpkgs-fmt
+          ninja
+          clang
         ];
         LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
       });
