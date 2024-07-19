@@ -97,5 +97,6 @@ in
           name = "Michał Minarowski";
         }
       ];
+      mainProgram = "shadower";
     };
   }
